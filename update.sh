@@ -7,4 +7,7 @@ if [ ! -d .devtools ]; then
 fi
 
 git submodule update --init --remote
+git add .devtools
+git commit -m "chore: upgrade devtools"
+
 

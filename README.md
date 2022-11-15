@@ -7,21 +7,16 @@ Variocube developer tools
 This repository is intended to be consumed as a git submodule.
 
 The developer is therefore responsible for initializing and updating the submodule in order to have the current version
-available in the project:
+linked in the project.
+
+`git` can be configured to automatically pull the currently linked version of submodules during `git pull`:
 
 ```shell
-git submodule update --init --remote
+git config --global submodule.recurse true
 ```
 
-As of now, `git` provides no way to automatically init and update submodules when pulling the consuming repository.
 
-Once the submodule has been initialized, there is helper script available to update to the current remote version:
-
-```shell
-.devtools/update.sh
-```
-
-### Adding the submodule
+### Adding devtools
 
 ```shell
 git submodule add -f -b main --name devtools https://github.com/variocube/devtools .devtools
@@ -33,6 +28,24 @@ git commit -m "chore: add devtools as submodule"
 ```
 
 Config files that are read from specific locations like the project root can be symlinked from the submodule.
+
+### Upgrading devtools
+
+Once the submodule has been initialized, there is helper script available to update to the current remote version:
+
+```shell
+.devtools/update.sh
+```
+
+Alternatively, you might want to issue these commands yourself:
+
+```shell
+git submodule update --init --remote
+git add .devtools
+git commit -m "chore: upgrade devtools"
+```
+
+## Configuration
 
 ### EditorConfig
 
