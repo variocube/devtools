@@ -9,6 +9,12 @@ This repository is intended to be consumed as a git submodule.
 The developer is therefore responsible for initializing and updating the submodule in order to have the current version
 linked in the project.
 
+After cloning a repository that uses submodules, you have to initialize them:
+
+```shell
+git submodule update --init
+```
+
 `git` can be configured to automatically pull the currently linked version of submodules during `git pull`:
 
 ```shell
