@@ -16,7 +16,8 @@ git config --global submodule.recurse true
 
 ```shell
 git submodule add -f -b main --name devtools https://github.com/variocube/devtools .devtools
-echo -e "\tignore = all" >>.gitmodules
+git config -f .gitmodules submodule.devtools.branch main
+git config -f .gitmodules submodule.devtools.ignore all
 git submodule init .devtools
 git add .gitmodules .devtools
 git commit -m "chore: add devtools as submodule"
@@ -80,3 +81,5 @@ git commit -m "chore: add dprint.json that extends devtools"
 #### Configure IntelliJ
 
 Install the `dprint` plugin for IntelliJ and enable it in settings.
+
+Add and commit the config files created for the `dprint` plugin in the `.idea` directory. 
