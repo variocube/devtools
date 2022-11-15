@@ -8,7 +8,7 @@ This repository is intended to be added as a submodule to consuming repositories
 
 ```shell
 $ git submodule add https://github.com/variocube/devtools .devtools
-$ git add .gitmodules
+$ git add .gitmodules .devtools
 $ git commit -m "chore: add devtools as submodule"
 ```
 
@@ -32,6 +32,9 @@ provide certain settings from an EditorConfig in a parent directory, most notabl
 
 dprint is a code formatter for JavaScript, TypeScript, JSON, Dockerfile, Markdown.
 
+You can use the provided configuration or if needed, create a project-specific configuration that
+extends the provided confiugration.
+
 #### Use the provided configuration
 
 ```shell
@@ -46,8 +49,15 @@ Create a `dprint.json` file that extends the provided configuration
 
 ```json
 {
-  "extends": "https://dprint.dev/path/to/config/file.v1.json"
+  "extends": ".devtools/config/dprint.json"
 }
+```
+
+Add it to git and commit:
+
+```shell
+$ git add dprint.json
+$ git commit -m "chore: add dprint.json that extends devtools"
 ```
 
 #### Configure IntelliJ
