@@ -4,12 +4,21 @@ Variocube developer tools
 
 ## Usage
 
-The developer is therefore responsible for updating the submodule in order to have the current version
-available in the project. Luckily, git can do this automatically when the following configuration is set:
+This repository is intended to be consumed as a git submodule.
+
+The developer is therefore responsible for initializing and updating the submodule in order to have the current version
+available in the project:
 
 ```shell
-# Tells git to automatically update submodules
-git config --global submodule.recurse true
+git submodule update --init --remote
+```
+
+As of now, `git` provides no way to automatically init and update submodules when pulling the consuming repository.
+
+Once the submodule has been initialized, there is helper script available to update to the current remote version:
+
+```shell
+.devtools/update.sh
 ```
 
 ### Adding the submodule
