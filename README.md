@@ -7,15 +7,12 @@ Variocube developer tools
 This repository is intended to be added as a submodule to consuming repositories.
 
 ```shell
-$ git submodule add https://github.com/variocube/devtools .devtools
-$ git add .gitmodules .devtools
-$ git commit -m "chore: add devtools as submodule"
-```
-
-In order to automatically pull changes from `devtools` this global git config is required:
-
-```shell
-$ git config --global submodule.recurse true
+git submodule add -b main --name devtools https://github.com/variocube/devtools .devtools
+echo -e "\tignore = all" >>.gitmodules
+echo -e "\tfetchRecurseSubmodules = true" >>.gitmodules
+git submodule init .devtools
+git add .gitmodules .devtools
+git commit -m "chore: add devtools as submodule"
 ```
 
 Config files that are read from specific locations like the project root can be symlinked from the submodule.
@@ -26,9 +23,9 @@ This repository contains a base config that can be applied to projects using a g
 a symbolic link:
 
 ```shell
-$ ln -s .devtools/config/.editorconfig
-$ git add .editorconfig
-$ git commit -m "chore: add .editorconfig from devtools"
+ln -s .devtools/config/.editorconfig
+git add .editorconfig
+git commit -m "chore: add .editorconfig from devtools"
 ```
 
 The provided EditorConfig does not set the `root = true` directive. This allows developers to
@@ -41,7 +38,7 @@ dprint is a code formatter for JavaScript, TypeScript, JSON, Dockerfile, Markdow
 Add the `dprint` package to your project:
 
 ```shell
-$ npm install --save-dev dprint
+npm install --save-dev dprint
 ```
 
 You can use the provided configuration or if needed, create a project-specific configuration that
@@ -50,9 +47,9 @@ extends the provided configuration.
 #### Use the provided configuration
 
 ```shell
-$ ln -s .devtools/config/dprint.json
-$ git add dprint.json
-$ git commit -m "chore: add dprint.json from devtools"
+ln -s .devtools/config/dprint.json
+git add dprint.json
+git commit -m "chore: add dprint.json from devtools"
 ```
 
 #### Extend the provided configuration
@@ -68,8 +65,8 @@ Create a `dprint.json` file that extends the provided configuration
 Add it to git and commit:
 
 ```shell
-$ git add dprint.json
-$ git commit -m "chore: add dprint.json that extends devtools"
+git add dprint.json
+git commit -m "chore: add dprint.json that extends devtools"
 ```
 
 #### Configure IntelliJ
