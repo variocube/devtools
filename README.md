@@ -12,6 +12,12 @@ $ git add .gitmodules .devtools
 $ git commit -m "chore: add devtools as submodule"
 ```
 
+In order to automatically pull changes from `devtools` this global git config is required:
+
+```shell
+$ git config --global submodule.recurse true
+```
+
 Config files that are read from specific locations like the project root can be symlinked from the submodule.
 
 ### EditorConfig
@@ -32,8 +38,14 @@ provide certain settings from an EditorConfig in a parent directory, most notabl
 
 dprint is a code formatter for JavaScript, TypeScript, JSON, Dockerfile, Markdown.
 
+Add the `dprint` package to your project:
+
+```shell
+$ npm install --save-dev dprint
+```
+
 You can use the provided configuration or if needed, create a project-specific configuration that
-extends the provided confiugration.
+extends the provided configuration.
 
 #### Use the provided configuration
 
