@@ -26,8 +26,9 @@ Config files that are read from specific locations like the project root can be 
 
 ### EditorConfig
 
-This repository contains a base config that can be applied to projects using a git submodule and
-a symbolic link:
+EditorConfig provides basic editor settings that are supported out of the box by most editors.
+
+Create a symbolic link to the editor config in your repository:
 
 ```shell
 ln -s .devtools/.editorconfig
