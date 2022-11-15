@@ -4,12 +4,19 @@ Variocube developer tools
 
 ## Usage
 
-This repository is intended to be added as a submodule to consuming repositories.
+The developer is therefore responsible for updating the submodule in order to have the current version
+available in the project. Luckily, git can do this automatically when the following configuration is set:
 
 ```shell
-git submodule add -b main --name devtools https://github.com/variocube/devtools .devtools
+# Tells git to automatically update submodules
+git config --global submodule.recurse true
+```
+
+### Adding the submodule
+
+```shell
+git submodule add -f -b main --name devtools https://github.com/variocube/devtools .devtools
 echo -e "\tignore = all" >>.gitmodules
-echo -e "\tfetchRecurseSubmodules = true" >>.gitmodules
 git submodule init .devtools
 git add .gitmodules .devtools
 git commit -m "chore: add devtools as submodule"
