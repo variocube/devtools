@@ -30,7 +30,7 @@ This repository contains a base config that can be applied to projects using a g
 a symbolic link:
 
 ```shell
-ln -s .devtools/config/.editorconfig
+ln -s .devtools/.editorconfig
 git add .editorconfig
 git commit -m "chore: add .editorconfig from devtools"
 ```
@@ -54,7 +54,7 @@ extends the provided configuration.
 #### Use the provided configuration
 
 ```shell
-ln -s .devtools/config/dprint.json
+ln -s .devtools/dprint.json
 git add dprint.json
 git commit -m "chore: add dprint.json from devtools"
 ```
