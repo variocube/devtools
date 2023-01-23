@@ -66,17 +66,23 @@ updateDevTools() {
 		die "Cannot update devtools without a project directory. Missing parameter to function updateDevTools."
 	fi
 	# Remove existing .devtools directory and create a fresh clone from the repository
-	wget https://github.com/variocube/devtools/archive/refs/heads/main.zip -O "${PROJECT_DIR}/devtools.zip" || die "Failed to download devtools from repository"
+	echo -n "Downloading current version of devtools ... "
+	wget -q https://github.com/variocube/devtools/archive/refs/heads/main.zip -O "${PROJECT_DIR}/devtools.zip" || die "Failed to download devtools from repository"
+	echo "OK"
+	echo -n "Unpacking new version of devtools ... "
 	unzip -q "${PROJECT_DIR}/devtools.zip" || die "Failed to unzip devtools"
+	echo "OK"
+	echo -n "Installing and linking new version of devtools ... "
 	rm -rf "${DEVTOOLS_DIR}"
 	mv "${PROJECT_DIR}/devtools-main" "${PROJECT_DIR}/.devtools"
 	rm "${PROJECT_DIR}/devtools.zip"
 	# Link files from .devtools into the project root
-	ln -s "${DEVTOOLS_DIR}/devtools.sh" "${PROJECT_DIR}/devtools.sh"
-	ln -s "${DEVTOOLS_DIR}/.editorconfig" "${PROJECT_DIR}/.editorconfig"
-	ln -s "${DEVTOOLS_DIR}/dprint.json" "${PROJECT_DIR}/dprint.json"
+	ln -sf "${DEVTOOLS_DIR}/devtools.sh" "${PROJECT_DIR}/devtools.sh"
+	ln -sf "${DEVTOOLS_DIR}/.editorconfig" "${PROJECT_DIR}/.editorconfig"
+	ln -sf "${DEVTOOLS_DIR}/dprint.json" "${PROJECT_DIR}/dprint.json"
 	mkdir -p "${PROJECT_DIR}/.github"
-	ln -s "${DEVTOOLS_DIR}/ISSUE_TEMPLATE.md" "${PROJECT_DIR}/.github/ISSUE_TEMPLATE.md"
+	ln -sf "${DEVTOOLS_DIR}/ISSUE_TEMPLATE.md" "${PROJECT_DIR}/.github/ISSUE_TEMPLATE.md"
+	echo "OK"
 }
 
 # Init an empty .vc configuration
