@@ -78,6 +78,7 @@ updateDevTools() {
 	rm -rf "${DEVTOOLS_DIR}"
 	mv "${PROJECT_DIR}/devtools-main" "${PROJECT_DIR}/.devtools"
 	rm "${PROJECT_DIR}/devtools.zip"
+	rm -rf "${PROJECT_DIR}/.devtools/.idea"
 	# Link files from .devtools into the project root
 	ln -sf "${DEVTOOLS_DIR}/devtools.sh" "${PROJECT_DIR}/devtools.sh"
 	ln -sf "${DEVTOOLS_DIR}/.editorconfig" "${PROJECT_DIR}/.editorconfig"
