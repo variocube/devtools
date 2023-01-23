@@ -67,7 +67,7 @@ updateDevTools() {
 	fi
 	# Remove existing .devtools directory and create a fresh clone from the repository
 	wget https://github.com/variocube/devtools/archive/refs/heads/main.zip -O "${PROJECT_DIR}/devtools.zip" || die "Failed to download devtools from repository"
-	unzip "${PROJECT_DIR}/devtools.zip" || die "Failed to unzip devtools"
+	unzip -q "${PROJECT_DIR}/devtools.zip" || die "Failed to unzip devtools"
 	rm -rf "${DEVTOOLS_DIR}"
 	mv "${PROJECT_DIR}/devtools-main" "${PROJECT_DIR}/.devtools"
 	rm "${PROJECT_DIR}/devtools.zip"
