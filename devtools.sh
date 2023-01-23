@@ -99,6 +99,7 @@ NODE_VERSION=14
 NPM_VERSION=8
 AWS_REGION=eu-west-1
 AWS_PROFILE=variocube
+# DATABASE_NAME=app_database_name
 EOF
 	fi
 	updateDevTools "${WORK_DIR}"
