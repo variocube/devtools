@@ -16,14 +16,28 @@ usage() {
   die "Usage: $0 <command> [command]"
 }
 
+confirm() {
+	read -r -p "${1:-Are you sure?} [y/N] " response
+	case "$response" in
+		[yY][eE][sS]|[yY])
+			true
+			;;
+		*)
+			false
+			;;
+	esac
+}
+
 # Print the help screen
 help() {
   echo "Variocube project setup tool"
   echo ""
   echo "Supported commands:"
+  echo "    init:           Creates the initial config file and fetches the initial copy of devtools into .devtools."
   echo "    setup:          Setup this project from scratch, runs an initial npm run dev if a package.json is found and"
   echo "                    a ./gradlew build if a build.gradle is found."
   echo "    assertSetup:    Checks if all prerequisites are met and exits with an error if not."
+  echo "    update:         Updates devtools to the newest version from the repository."
   echo ""
 
   if [ ! -z "$1" ] ; then
@@ -42,25 +56,42 @@ help() {
 
 ### Global variables and setup
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-CONFIG_FILE="$SCRIPT_DIR/.vc"
-DEVTOOLS_DIR="$SCRIPT_DIR/.devtools"
+WORK_DIR=$(pwd)
+CONFIG_FILE="${WORK_DIR}/.vc"
+DEVTOOLS_DIR="${WORK_DIR}/.devtools"
+
+updateDevTools() {
+	PROJECT_DIR="${1}"
+	if [[ -z "${PROJECT_DIR}" ]] ; then
+		die "Cannot update devtools without a project directory. Missing parameter to function updateDevTools."
+	fi
+	# Remove existing .devtools directory and create a fresh clone from the repository
+	wget https://github.com/variocube/devtools/archive/refs/heads/main.zip -O "${PROJECT_DIR}/devtools.zip" || die "Failed to download devtools from repository"
+	unzip "${PROJECT_DIR}/devtools.zip" || die "Failed to unzip devtools"
+	rm -rf "${DEVTOOLS_DIR}"
+	mv "${PROJECT_DIR}/devtools-main" "${PROJECT_DIR}/.devtools"
+	rm "${PROJECT_DIR}/devtools.zip"
+	# Link files from .devtools into the project root
+	ln -s "${DEVTOOLS_DIR}/devtools.sh" "${PROJECT_DIR}/devtools.sh"
+	ln -s "${DEVTOOLS_DIR}/.editorconfig" "${PROJECT_DIR}/.editorconfig"
+	ln -s "${DEVTOOLS_DIR}/dprint.json" "${PROJECT_DIR}/dprint.json"
+	mkdir -p "${PROJECT_DIR}/.github"
+	ln -s "${DEVTOOLS_DIR}/ISSUE_TEMPLATE.md" "${PROJECT_DIR}/.github/ISSUE_TEMPLATE.md"
+}
 
 # Init an empty .vc configuration
 init() {
-# Create initial .vc configuration file
-  cat << EOF > "$CONFIG_FILE"
+	confirm "Do you really want to initialize a new project in ${WORK_DIR}?" || exit 1
+	if [ ! -f "${CONFIG_FILE}" ]; then
+		# Create initial .vc configuration file
+  	cat << EOF > "${CONFIG_FILE}"
 JAVA_VERSION=11
 NODE_VERSION=14
 NPM_VERSION=8
 EOF
-# Create .devtools directory and clone devtools
-	mkdir "$DEVTOOLS_DIR"
-  wget https://github.com/variocube/devtools/archive/refs/heads/main.zip -O "${SCRIPT_DIR}/devtools.zip"
-  unzip "${SCRIPT_DIR}/devtools.zip"
-  mv "${SCRIPT_DIR}/devtools-main" "${SCRIPT_DIR}/.devtools"
-  rm "${SCRIPT_DIR}/devtools.zip"
+	fi
+	updateDevTools "${WORK_DIR}"
 }
-
 
 if [ "$1" == "init" ] ; then
   if [[ -f "${CONFIG_FILE}" ]] ; then
@@ -161,6 +192,10 @@ case "$1" in
     COMMAND="$1"
     shift
     ;;
+  update)
+		COMMAND="$1"
+		shift
+		;;
   *)
     echo "Unknown command: $1"
     help
@@ -189,4 +224,7 @@ case "$COMMAND" in
   assertSetup)
     assertSetup
     ;;
+  update)
+  	updateDevTools "${SCRIPT_DIR}"
+		;;
 esac
