@@ -97,6 +97,8 @@ init() {
 JAVA_VERSION=11
 NODE_VERSION=14
 NPM_VERSION=8
+AWS_REGION=eu-west-1
+AWS_PROFILE=variocube
 EOF
 	fi
 	updateDevTools "${WORK_DIR}"
