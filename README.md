@@ -4,52 +4,14 @@ Variocube developer tools
 
 ## Usage
 
-This repository is intended to be consumed as a git submodule.
-
-The developer is therefore responsible for initializing and updating the submodule in order to have the current version
-linked in the project.
-
-After cloning a repository that uses submodules, you have to initialize them:
-
-```shell
-git submodule update --init
-```
-
-`git` can be configured to automatically pull the currently linked version of submodules during `git pull`:
-
-```shell
-git config --global submodule.recurse true
-```
-
-
-### Adding devtools
-
-```shell
-git submodule add -f -b main --name devtools https://github.com/variocube/devtools .devtools
-git config -f .gitmodules submodule.devtools.branch main
-git config -f .gitmodules submodule.devtools.ignore all
-git submodule init .devtools
-git add .gitmodules .devtools
-git commit -m "chore: add devtools as submodule"
-```
-
-Config files that are read from specific locations like the project root can be symlinked from the submodule.
+The code in this repository is inteded to be installed into variocube projects by calling `devtools.sh init` in the
+project root. This will create a `.devtools` directory in the project root and copy the contents of this repository
+into it. The `.devtools` directory, its configuration file `.vc` and the created symlinks should be checked in.
 
 ### Upgrading devtools
 
-Once the submodule has been initialized, there is helper script available to update to the current remote version:
-
-```shell
-.devtools/update.sh
-```
-
-Alternatively, you might want to issue these commands yourself:
-
-```shell
-git submodule update --init --remote
-git add .devtools
-git commit -m "chore: upgrade devtools"
-```
+If a user wants to upgrade devtools, he can call `devtools.sh upgrade` in the project root. This will pull the latest
+version into the `.devtools` directory and overwrite the symlinks.
 
 ## Configuration
 
