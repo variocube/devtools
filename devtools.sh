@@ -38,6 +38,8 @@ help() {
   echo "                    a ./gradlew build if a build.gradle is found."
   echo "    assertSetup:    Checks if all prerequisites are met and exits with an error if not."
   echo "    update:         Updates devtools to the newest version from the repository."
+  echo "    databaseCreate: Creates a database according to the configuration in .vc."
+  echo "    dropDatabase:   Drops the local database according to the configuration in .vc."
   echo ""
 
   if [ ! -z "$1" ] ; then
@@ -184,6 +186,30 @@ setup() {
   fi
 }
 
+assertDatabaseConfiguration() {
+	if [[ -z "${DATABASE_NAME}" ]] ; then
+		die "Cannot initialize database without a database name. Please set the DATABASE_NAME variable in ${CONFIG_FILE}."
+	fi
+}
+
+# Create a new empty local database
+databaseCreate() {
+	# TODO Check with Matthias' older scripts to securely query the database password only once
+	assertDatabaseConfiguration
+	echo "Creating database ${DATABASE_NAME} (you will be asked for the MySQL/MariaDB password of root@localhost) ..."
+	echo "CREATE DATABASE IF NOT EXISTS ${DATABASE_NAME};" | mysql -u root -p || die "Could not create database ${DATABASE_NAME}"
+	echo "GRANT ALL PRIVILEGES ON ${DATABASE_NAME}.* TO '${DATABASE_NAME}'@'localhost' IDENTIFIED BY '${DATABASE_NAME}';" | mysql -u root -p || die "Could not grant privileges for ${DATABASE_NAME}"
+	echo "OK"
+}
+
+# Drop the local database
+databaseDrop() {
+	assertDatabaseConfiguration
+		echo "Dropping database ${DATABASE_NAME} (you will be asked for the MySQL/MariaDB password of root@localhost) ..."
+  	echo "DROP DATABASE ${DATABASE_NAME};" | mysql -u root -p || die "Could not drop database ${DATABASE_NAME}"
+  	echo "OK"
+}
+
 
 # Check if we have any command at all
 [ "$#" -ge 1 ] || usage
@@ -199,6 +225,14 @@ case "$1" in
     shift
     ;;
   update)
+		COMMAND="$1"
+		shift
+		;;
+	databaseCreate)
+		COMMAND="$1"
+		shift
+		;;
+	databaseDrop)
 		COMMAND="$1"
 		shift
 		;;
@@ -232,5 +266,11 @@ case "$COMMAND" in
     ;;
   update)
   	updateDevTools "${SCRIPT_DIR}"
+		;;
+	databaseCreate)
+		databaseCreate
+		;;
+	databaseDrop)
+		databaseDrop
 		;;
 esac
