@@ -40,6 +40,8 @@ help() {
   echo "    update:         Updates devtools to the newest version from the repository."
   echo "    databaseCreate: Creates a database according to the configuration in .vc."
   echo "    dropDatabase:   Drops the local database according to the configuration in .vc."
+  echo "    tailLogs:       Tails logs from CloudWatch as configured in .vc. By default the logs of the app stage are"
+  echo "                    shown. Use the -s <stage> switch to specify a specific stage."
   echo ""
 
   if [ ! -z "$1" ] ; then
@@ -97,8 +99,8 @@ init() {
 JAVA_VERSION=11
 NODE_VERSION=14
 NPM_VERSION=8
-AWS_REGION=eu-west-1
-AWS_PROFILE=variocube
+VC_AWS_REGION=eu-west-1
+VC_AWS_PROFILE=variocube
 # DATABASE_NAME=app_database_name
 EOF
 	fi
@@ -121,6 +123,20 @@ if [[ ! -f "$CONFIG_FILE" ]] ; then
   die "Configuration file $CONFIG_FILE not found. Please run ${0} init first."
 fi
 source "$CONFIG_FILE"
+
+## AWS Profiles from environment variables or .vc
+if [[ -z "${AWS_PROFILE}" ]] ; then
+	if [[ -z "${VC_AWS_PROFILE}" ]] ; then
+		die "No AWS profile set. Please set the environment variable AWS_PROFILE or the variable VC_AWS_PROFILE in .vc."
+	fi
+	export AWS_PROFILE="${VC_AWS_PROFILE}"
+fi
+if [[ -z "${AWS_REGION}" ]] ; then
+	if [[ -z "${VC_AWS_REGION}" ]] ; then
+  		die "No AWS region set. Please set the environment variable AWS_REGION or the variable VC_AWS_REGION in .vc."
+  	fi
+	export AWS_REGION="${VC_AWS_REGION}"
+fi
 
 ### Library functions
 
@@ -214,6 +230,18 @@ databaseDrop() {
   	echo "OK"
 }
 
+# Tail CloudWatch logs
+tailCloudWatchLogs() {
+	assertAwsCli
+	if [[ -z "${STAGE}" ]] ; then
+		STAGE="app"
+	fi
+	LOG_GROUP_NAME=CLOUD_WATCH_LOG_GROUP_${STAGE}
+  if [[ -z "${!LOG_GROUP_NAME}" ]] ; then
+		die "No CloudWatch log group name found for stage ${STAGE}. Please set the CLOUD_WATCH_LOG_GROUP_${STAGE} variable in ${CONFIG_FILE}."
+	fi
+	aws logs tail --follow --region "${AWS_REGION}" --profile "${AWS_PROFILE}" "${!LOG_GROUP_NAME}"
+}
 
 # Check if we have any command at all
 [ "$#" -ge 1 ] || usage
@@ -240,6 +268,10 @@ case "$1" in
 		COMMAND="$1"
 		shift
 		;;
+	tailLogs)
+		COMMAND="$1"
+		shift
+		;;
   *)
     echo "Unknown command: $1"
     help
@@ -247,14 +279,17 @@ case "$1" in
 esac
 
 # Parse options
-while getopts ":h:v:" OPTION; do
-  case $OPTARG in
+while getopts "hvs:" OPTION; do
+  case $OPTION in
     h)
       help "${COMMAND}"
       ;;
     v)
       VERBOSE=1
       ;;
+    s)
+    	STAGE="${OPTARG}"
+    	;;
     *)
       die "Invalid option: -$OPTARG"
       ;;
@@ -276,5 +311,8 @@ case "$COMMAND" in
 		;;
 	databaseDrop)
 		databaseDrop
+		;;
+	tailLogs)
+		tailCloudWatchLogs
 		;;
 esac
