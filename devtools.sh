@@ -39,7 +39,9 @@ help() {
   echo "    assertSetup:    Checks if all prerequisites are met and exits with an error if not."
   echo "    update:         Updates devtools to the newest version from the repository."
   echo "    databaseCreate: Creates a database according to the configuration in .vc."
-  echo "    dropDatabase:   Drops the local database according to the configuration in .vc."
+  echo "    databaseDrop:   Drops the local database according to the configuration in .vc."
+  echo "    databaseImport: Imports a database from a dump file into the local server. If no dump file is specified via"
+  echo "                    the -d switch, then the latest dump file from the S3 bucket is used."
   echo "    tailLogs:       Tails logs from CloudWatch as configured in .vc. By default the logs of the app stage are"
   echo "                    shown. Use the -s <stage> switch to specify a specific stage."
   echo ""
@@ -216,20 +218,64 @@ assertDatabaseConfiguration() {
 
 # Create a new empty local database
 databaseCreate() {
-	# TODO Check with Matthias' older scripts to securely query the database password only once
+	echo -n "Please enter the root password for the local MySQL server: "
+  read -s pass
+  echo ""
 	assertDatabaseConfiguration
-	echo "Creating database ${DATABASE_NAME} (you will be asked for the MySQL/MariaDB password of root@localhost) ..."
-	echo "CREATE DATABASE IF NOT EXISTS ${DATABASE_NAME};" | mysql -u root -p || die "Could not create database ${DATABASE_NAME}"
-	echo "GRANT ALL PRIVILEGES ON ${DATABASE_NAME}.* TO '${DATABASE_NAME}'@'localhost' IDENTIFIED BY '${DATABASE_NAME}';" | mysql -u root -p || die "Could not grant privileges for ${DATABASE_NAME}"
+	echo "Creating database ${DATABASE_NAME} ..."
+	echo "CREATE DATABASE IF NOT EXISTS ${DATABASE_NAME};" | mysql -u root -p${pass} || die "Could not create database ${DATABASE_NAME}"
+	echo "GRANT ALL PRIVILEGES ON ${DATABASE_NAME}.* TO '${DATABASE_NAME}'@'localhost' IDENTIFIED BY '${DATABASE_NAME}';" | mysql -u root -p${pass} || die "Could not grant privileges for ${DATABASE_NAME}"
 	echo "OK"
 }
 
 # Drop the local database
 databaseDrop() {
+	echo -n "Please enter the root password for the local MySQL server: "
+	read -s pass
+	echo ""
 	assertDatabaseConfiguration
-		echo "Dropping database ${DATABASE_NAME} (you will be asked for the MySQL/MariaDB password of root@localhost) ..."
-  	echo "DROP DATABASE ${DATABASE_NAME};" | mysql -u root -p || die "Could not drop database ${DATABASE_NAME}"
-  	echo "OK"
+	echo "Dropping database ${DATABASE_NAME} ..."
+	echo "DROP DATABASE ${DATABASE_NAME};" | mysql -u root -p${pass} || die "Could not drop database ${DATABASE_NAME}"
+	echo "OK"
+}
+
+# Import a database dump into the local database
+databaseImportDump() {
+	DATABASE_DUMP_FILE="${1}"
+	if [ -z "${DATABASE_DUMP_FILE}" ] ; then
+		die "No database dump file specified"
+	fi
+	if [ ! -f "${DATABASE_DUMP_FILE}" ] ; then
+		die "Database dump file ${DATABASE_DUMP_FILE} not found"
+	fi
+	assertDatabaseConfiguration
+	echo -n "Please enter the root password for the local MySQL server: "
+	read -s pass
+	echo ""
+	echo -n "Importing database dump ${DATABASE_DUMP_FILE} into ${DATABASE_NAME} ..."
+	mysql -u root -p${pass} ${DATABASE_NAME} < "${DATABASE_DUMP_FILE}" || die "Could not import database dump ${DATABASE_DUMP_FILE}"
+	echo "OK"
+}
+
+# Import database from dump, download from S3 if no specific dump is specified
+databaseImport() {
+	assertDatabaseConfiguration
+	assertAwsCli
+	DATABASE_DUMP_FILE="${1}"
+	if [[ -z "${DATABASE_DUMP_FILE}" ]] ; then
+		mkdir -p "${WORK_DIR}/.databases"
+		if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+			YESTERDAY=$(date -d "-1day" +%Y-%m-%d)
+  	elif [[ "$OSTYPE" == "darwin"* ]]; then
+			YESTERDAY=$(date -v-1d +%Y-%m-%d)
+		fi
+		TODAYS_BACKUP="${YESTERDAY}-${DATABASE_NAME}.sql.gz"
+		echo "Downloading latest backup ${TODAYS_BACKUP} from S3"
+		aws s3 cp "s3://vc-aws-infrastructure/rds-backups/${TODAYS_BACKUP}" "${WORK_DIR}/.databases/${TODAYS_BACKUP}" --region "${AWS_REGION}" --profile "${AWS_PROFILE}" || die "Could not download latest backup ${TODAYS_BACKUP}"
+		gunzip "${WORK_DIR}/.databases/${TODAYS_BACKUP}" || die "Could not unzip ${WORK_DIR}/.databases/${TODAYS_BACKUP}"
+		DATABASE_DUMP_FILE="${WORK_DIR}/.databases/${YESTERDAY}-${DATABASE_NAME}.sql"
+	fi
+	databaseImportDump "${DATABASE_DUMP_FILE}"
 }
 
 # Tail CloudWatch logs
@@ -270,6 +316,10 @@ case "$1" in
 		COMMAND="$1"
 		shift
 		;;
+	databaseImport)
+		COMMAND="$1"
+		shift
+		;;
 	tailLogs)
 		COMMAND="$1"
 		shift
@@ -281,7 +331,7 @@ case "$1" in
 esac
 
 # Parse options
-while getopts "hvs:" OPTION; do
+while getopts "hvs:d:" OPTION; do
   case $OPTION in
     h)
       help "${COMMAND}"
@@ -292,6 +342,9 @@ while getopts "hvs:" OPTION; do
     s)
     	STAGE="${OPTARG}"
     	;;
+    d)
+			DATABASE_DUMP_FILE="${OPTARG}"
+			;;
     *)
       die "Invalid option: -$OPTARG"
       ;;
@@ -313,6 +366,9 @@ case "$COMMAND" in
 		;;
 	databaseDrop)
 		databaseDrop
+		;;
+	databaseImport)
+		databaseImport "${DATABASE_DUMP_FILE}"
 		;;
 	tailLogs)
 		tailCloudWatchLogs
