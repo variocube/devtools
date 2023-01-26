@@ -82,11 +82,13 @@ updateDevTools() {
 	rm "${PROJECT_DIR}/devtools.zip"
 	rm -rf "${PROJECT_DIR}/.devtools/.idea"
 	# Link files from .devtools into the project root
-	ln -sf "${DEVTOOLS_DIR}/devtools.sh" "${PROJECT_DIR}/devtools.sh"
-	ln -sf "${DEVTOOLS_DIR}/.editorconfig" "${PROJECT_DIR}/.editorconfig"
-	ln -sf "${DEVTOOLS_DIR}/dprint.json" "${PROJECT_DIR}/dprint.json"
+	pushd "${PROJECT_DIR}" > /dev/null
+	ln -sf "./.devtools/devtools.sh" "./devtools.sh"
+	ln -sf "./.devtools/.editorconfig" "./.editorconfig"
+	ln -sf "./.devtools/dprint.json" "./dprint.json"
 	mkdir -p "${PROJECT_DIR}/.github"
-	ln -sf "${DEVTOOLS_DIR}/ISSUE_TEMPLATE.md" "${PROJECT_DIR}/.github/ISSUE_TEMPLATE.md"
+	ln -sf "./.devtools/ISSUE_TEMPLATE.md" "./.github/ISSUE_TEMPLATE.md"
+	popd > /dev/null
 	echo "OK"
 }
 
