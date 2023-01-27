@@ -4,9 +4,17 @@ Variocube developer tools
 
 ## Usage
 
-The code in this repository is inteded to be installed into variocube projects by calling `devtools.sh init` in the
+The code in this repository is intended to be installed into variocube projects by calling `devtools.sh init` in the
 project root. This will create a `.devtools` directory in the project root and copy the contents of this repository
 into it. The `.devtools` directory, its configuration file `.vc` and the created symlinks should be checked in.
+
+If you want to install directly from this repository just run the following command in the root of your project:
+
+```bash
+wget https://raw.githubusercontent.com/variocube/devtools/master/devtools.sh
+chmod +x devtools.sh
+./devtools.sh init
+```
 
 ### Upgrading devtools
 
@@ -18,14 +26,6 @@ version into the `.devtools` directory and overwrite the symlinks.
 ### EditorConfig
 
 EditorConfig provides basic editor settings that are supported out of the box by most editors.
-
-Create a symbolic link to the editor config in your repository:
-
-```shell
-ln -s .devtools/.editorconfig
-git add .editorconfig
-git commit -m "chore: add .editorconfig from devtools"
-```
 
 The provided EditorConfig does not set the `root = true` directive. This allows developers to
 provide certain settings from an EditorConfig in a parent directory, most notably the `tab_width`.
@@ -42,14 +42,6 @@ npm install --save-dev dprint
 
 You can use the provided configuration or if needed, create a project-specific configuration that
 extends the provided configuration.
-
-#### Use the provided configuration
-
-```shell
-ln -s .devtools/dprint.json
-git add dprint.json
-git commit -m "chore: add dprint.json from devtools"
-```
 
 #### Extend the provided configuration
 
