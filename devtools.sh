@@ -89,7 +89,7 @@ updateDevTools() {
 	ln -sf "./.devtools/.editorconfig" "./.editorconfig"
 	ln -sf "./.devtools/dprint.json" "./dprint.json"
 	mkdir -p "${PROJECT_DIR}/.github"
-	ln -sf "./.devtools/ISSUE_TEMPLATE.md" "./.github/ISSUE_TEMPLATE.md"
+	cp "./.devtools/ISSUE_TEMPLATE.md" "./.github/ISSUE_TEMPLATE.md"
 	popd > /dev/null
 	echo "OK"
 }
