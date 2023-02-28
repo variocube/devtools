@@ -41,7 +41,8 @@ help() {
   echo "    databaseCreate: Creates a database according to the configuration in .vc."
   echo "    databaseDrop:   Drops the local database according to the configuration in .vc."
   echo "    databaseImport: Imports a database from a dump file into the local server. If no dump file is specified via"
-  echo "                    the -d switch, then the latest dump file from the S3 bucket is used. The -c switch leaves the downloaded dump file compressed."
+  echo "                    the -d switch, then the latest dump file from the S3 bucket is used."
+  echo "                    By default the dump is left compressed, the -u switch uncompresses the dump."
   echo "    tailLogs:       Tails logs from CloudWatch as configured in .vc. By default the logs of the app stage are"
   echo "                    shown. Use the -s <stage> switch to specify a specific stage."
   echo ""
@@ -256,7 +257,7 @@ databaseImportDump() {
 	if [[ ${DATABASE_DUMP_FILE} == *.sql ]] ; then
 		mysql -u root -p${pass} ${DATABASE_NAME} < "${DATABASE_DUMP_FILE}" || die "Could not import database dump ${DATABASE_DUMP_FILE}"
 	else
-		# assume it's a compressed (.gz) file
+		# assume it's a .gz file
 		zcat "${DATABASE_DUMP_FILE}" | mysql -u root -p${pass} ${DATABASE_NAME} || die "Could not import compressed database dump ${DATABASE_DUMP_FILE}"
 	fi
 	echo "OK"
@@ -277,11 +278,11 @@ databaseImport() {
 		TODAYS_BACKUP="${YESTERDAY}-${DATABASE_NAME}.sql.gz"
 		echo "Downloading latest backup ${TODAYS_BACKUP} from S3"
 		aws s3 cp "s3://vc-aws-infrastructure/rds-backups/${TODAYS_BACKUP}" "${WORK_DIR}/.databases/${TODAYS_BACKUP}" --region "${AWS_REGION}" --profile "${AWS_PROFILE}" || die "Could not download latest backup ${TODAYS_BACKUP}"
-		if [[ ${LEAVE_DUMP_COMPRESSED} == 1 ]] ; then
-			DATABASE_DUMP_FILE="${WORK_DIR}/.databases/${YESTERDAY}-${DATABASE_NAME}.sql.gz"
-		else
+		if [[ ${UNCOMPRESS_DUMP} == 1 ]] ; then
 			gunzip "${WORK_DIR}/.databases/${TODAYS_BACKUP}" || die "Could not unzip ${WORK_DIR}/.databases/${TODAYS_BACKUP}"
 			DATABASE_DUMP_FILE="${WORK_DIR}/.databases/${YESTERDAY}-${DATABASE_NAME}.sql"
+		else
+			DATABASE_DUMP_FILE="${WORK_DIR}/.databases/${YESTERDAY}-${DATABASE_NAME}.sql.gz"
 		fi
 	fi
 	databaseImportDump "${DATABASE_DUMP_FILE}"
@@ -340,7 +341,7 @@ case "$1" in
 esac
 
 # Parse options
-while getopts "hvs:d:c" OPTION; do
+while getopts "hvs:d:u" OPTION; do
   case $OPTION in
     h)
       help "${COMMAND}"
@@ -354,8 +355,8 @@ while getopts "hvs:d:c" OPTION; do
     d)
 			DATABASE_DUMP_FILE="${OPTARG}"
 			;;
-	  c)
-	  	LEAVE_DUMP_COMPRESSED=1
+	  u)
+	  	UNCOMPRESS_DUMP=1
 	  	;;
     *)
       die "Invalid option: -$OPTARG"
