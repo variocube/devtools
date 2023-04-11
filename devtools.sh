@@ -43,6 +43,7 @@ help() {
   echo "    databaseImport: Imports a database from a dump file into the local server. If no dump file is specified via"
   echo "                    the -d switch, then the latest dump file from the S3 bucket is used."
   echo "                    By default the dump is left compressed, the -u switch uncompresses the dump."
+  echo "    cleanDbDir:     Deletes everything in the .databases Directory"
   echo "    tailLogs:       Tails logs from CloudWatch as configured in .vc. By default the logs of the app stage are"
   echo "                    shown. Use the -s <stage> switch to specify a specific stage."
   echo ""
@@ -301,6 +302,18 @@ tailCloudWatchLogs() {
 	aws logs tail --follow --region "${AWS_REGION}" --profile "${AWS_PROFILE}" "${!LOG_GROUP_NAME}"
 }
 
+# Deletes everything in the .database Directory
+cleanDbDirectory() {
+	echo -n "Do you really want to delete all files in ${WORK_DIR}/.databases/ ? (yes or n): "
+	read del
+	if [ ${del} == "yes" ] ; then
+		echo "Cleaning the .databases directory ..."
+		rm -v ${WORK_DIR}/.databases/*
+	else
+		echo "OK, nothing was deleted"
+	fi
+}
+
 # Check if we have any command at all
 [ "$#" -ge 1 ] || usage
 
@@ -331,6 +344,10 @@ case "$1" in
 		shift
 		;;
 	tailLogs)
+		COMMAND="$1"
+		shift
+		;;
+	cleanDbDir)
 		COMMAND="$1"
 		shift
 		;;
@@ -385,5 +402,8 @@ case "$COMMAND" in
 		;;
 	tailLogs)
 		tailCloudWatchLogs
+		;;
+	cleanDbDir)
+		cleanDbDirectory
 		;;
 esac
