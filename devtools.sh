@@ -47,6 +47,9 @@ help() {
   echo "    tailLogs:       Tails logs from CloudWatch as configured in .vc. By default the logs of the app stage are"
   echo "                    shown. Use the -s <stage> switch to specify a specific stage."
   echo ""
+  echo "For Linux Users:"
+  echo "    Leave the MySQL server password at the prompt empty. Then the mysql commands for root run with sudo."
+  echo ""
 
   if [ ! -z "$1" ] ; then
     case "$1" in
@@ -212,6 +215,17 @@ setup() {
   fi
 }
 
+setSudo() {
+	# when PW is empty and OS is Linux, root mysql commands are called with "sudo"
+	if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+		if [[ -z "$1" ]] ; then
+  		sudo="sudo"
+  	fi
+  else
+  	sudo=""
+	fi
+}
+
 assertDatabaseConfiguration() {
 	if [[ -z "${DATABASE_NAME}" ]] ; then
 		die "Cannot initialize database without a database name. Please set the DATABASE_NAME variable in ${CONFIG_FILE}."
@@ -224,9 +238,11 @@ databaseCreate() {
   read -s pass
   echo ""
 	assertDatabaseConfiguration
+	setSudo ${pass}
 	echo "Creating database ${DATABASE_NAME} ..."
-	echo "CREATE DATABASE IF NOT EXISTS ${DATABASE_NAME};" | mysql -u root -p${pass} || die "Could not create database ${DATABASE_NAME}"
-	echo "GRANT ALL PRIVILEGES ON ${DATABASE_NAME}.* TO '${DATABASE_NAME}'@'localhost' IDENTIFIED BY '${DATABASE_NAME}';" | mysql -u root -p${pass} || die "Could not grant privileges for ${DATABASE_NAME}"
+	echo "CREATE DATABASE IF NOT EXISTS ${DATABASE_NAME};" | "${sudo}" mysql -u root -p${pass} || die "Could not create database ${DATABASE_NAME}"
+	echo "Grant all Priviliges on ${DATABASE_NAME} ..."
+	echo "GRANT ALL PRIVILEGES ON ${DATABASE_NAME}.* TO '${DATABASE_NAME}'@'localhost';" | "${sudo}" mysql -u root -p${pass} || die "Could not grant privileges for ${DATABASE_NAME}"
 	echo "OK"
 }
 
@@ -236,8 +252,9 @@ databaseDrop() {
 	read -s pass
 	echo ""
 	assertDatabaseConfiguration
+	setSudo ${pass}
 	echo "Dropping database ${DATABASE_NAME} ..."
-	echo "DROP DATABASE ${DATABASE_NAME};" | mysql -u root -p${pass} || die "Could not drop database ${DATABASE_NAME}"
+	echo "DROP DATABASE ${DATABASE_NAME};" | "${sudo}" mysql -u root -p${pass} || die "Could not drop database ${DATABASE_NAME}"
 	echo "OK"
 }
 
@@ -253,13 +270,15 @@ databaseImportDump() {
 	assertDatabaseConfiguration
 	echo -n "Please enter the root password for the local MySQL server: "
 	read -s pass
+	setSudo ${pass}
 	echo ""
 	echo -n "Importing database dump ${DATABASE_DUMP_FILE} into ${DATABASE_NAME} ..."
+	echo ""
 	if [[ ${DATABASE_DUMP_FILE} == *.sql ]] ; then
-		mysql -u root -p${pass} ${DATABASE_NAME} < "${DATABASE_DUMP_FILE}" || die "Could not import database dump ${DATABASE_DUMP_FILE}"
+		"${sudo}" mysql -u root -p${pass} ${DATABASE_NAME} < "${DATABASE_DUMP_FILE}" || die "Could not import database dump ${DATABASE_DUMP_FILE}"
 	else
 		# assume it's a .gz file
-		zcat "${DATABASE_DUMP_FILE}" | mysql -u root -p${pass} ${DATABASE_NAME} || die "Could not import compressed database dump ${DATABASE_DUMP_FILE}"
+		zcat "${DATABASE_DUMP_FILE}" | "${sudo}" mysql -u root -p${pass} ${DATABASE_NAME} || die "Could not import compressed database dump ${DATABASE_DUMP_FILE}"
 	fi
 	echo "OK"
 }
