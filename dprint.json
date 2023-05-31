@@ -8,6 +8,8 @@
     "importDeclaration.spaceSurroundingNamedImports": false
   },
   "json": {
+	"useTabs": false,
+	"indentWidth": 2
   },
   "markdown": {
   },
