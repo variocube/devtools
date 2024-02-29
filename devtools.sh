@@ -95,6 +95,7 @@ updateDevTools() {
 	ln -sf "./.devtools/dprint.json" "./dprint.json"
 	mkdir -p "${PROJECT_DIR}/.github"
 	cp "./.devtools/ISSUE_TEMPLATE.md" "./.github/ISSUE_TEMPLATE.md"
+	cp "./.devtools/PULL_REQUEST_TEMPLATE.md" "./.github/PULL_REQUEST_TEMPLATE.md"
 	popd > /dev/null
 	echo "OK"
 }
