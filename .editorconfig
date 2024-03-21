@@ -19,7 +19,9 @@ insert_final_newline = true
 
 # Language files: Lingohub insists on 2 spaces
 [**/i18n/*.json]
-charset = utf-8
 indent_style = space
 indent_size = 2
 
+[*.yml]
+indent_style = space
+indent_size = 2
