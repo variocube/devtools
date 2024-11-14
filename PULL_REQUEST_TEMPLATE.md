@@ -17,12 +17,14 @@ Additional notes:
 - [ ] I tested error cases and errors are handled correctly
 - [ ] The build and tests have succeeded
 - [ ] There are no conflicts with the main / master branch
+- [ ] The changes have implications for IT security
 
 ## Reviewer
 
 Code review:
 - [ ] The coder completed their checklist to a reasonable extent (relative to the complexity of the PR)
 - [ ] I have reviewed the code, and it is easy to understand and follows best practices.
+- [ ] The changes have implications for IT security
 
 Testing:
 - [ ] I have tested that the issue is resolved
