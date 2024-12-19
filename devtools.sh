@@ -96,10 +96,10 @@ updateDevTools() {
 	# Link IDEA settings
 	mkdir -p "./idea"
 	mkdir -p "./idea/codeStyles"
-	ln -sf "./.devtools/.idea/codeStyles/codeStyleConfig.xml" "./.idea/codeStyles/codeStyleConfig.xml"
-	ln -sf "./.devtools/.idea/codeStyles/Project.xml" "./.idea/codeStyles/Project.xml"
-	ln -sf "./.devtools/dprintProjectConfig.xml" "./.idea/dprintProjectConfig.xml"
-	ln -sf "./.devtools/dprintUserConfig.xml" "./.idea/dprintUserConfig.xml"
+	ln -sf "./.devtools/idea/codeStyles/codeStyleConfig.xml" "./.idea/codeStyles/codeStyleConfig.xml"
+	ln -sf "./.devtools/idea/codeStyles/Project.xml" "./.idea/codeStyles/Project.xml"
+	ln -sf "./.devtools/idea/dprintProjectConfig.xml" "./.idea/dprintProjectConfig.xml"
+	ln -sf "./.devtools/idea/dprintUserConfig.xml" "./.idea/dprintUserConfig.xml"
 	# Link GitHub settings
 	mkdir -p "./.github"
 	ln -sf "./.devtools/ISSUE_TEMPLATE.md" "./.github/ISSUE_TEMPLATE.md"
