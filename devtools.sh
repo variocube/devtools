@@ -93,9 +93,15 @@ updateDevTools() {
 	ln -sf "./.devtools/devtools.sh" "./devtools.sh"
 	ln -sf "./.devtools/.editorconfig" "./.editorconfig"
 	ln -sf "./.devtools/dprint.json" "./dprint.json"
-	mkdir -p "${PROJECT_DIR}/.github"
-	cp "./.devtools/ISSUE_TEMPLATE.md" "./.github/ISSUE_TEMPLATE.md"
-	cp "./.devtools/PULL_REQUEST_TEMPLATE.md" "./.github/PULL_REQUEST_TEMPLATE.md"
+	# Link IDEA settings
+	mkdir -p "idea"
+	ln -sf ".devtools/.idea/codeStyles" ".idea/codeStyles"
+	ln -sf ".devtools/dprintProjectConfig.xml" ".idea/dprintProjectConfig.xml"
+	ln -sf ".devtools/dprintUserConfig.xml" ".idea/dprintUserConfig.xml"
+	# Link GitHub settings
+	mkdir -p ".github"
+	ln -sf ".devtools/ISSUE_TEMPLATE.md" ".github/ISSUE_TEMPLATE.md"
+	ln -sf ".devtools/PULL_REQUEST_TEMPLATE.md" ".github/PULL_REQUEST_TEMPLATE.md"
 	popd > /dev/null
 	echo "OK"
 }
