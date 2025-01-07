@@ -5,7 +5,8 @@
     "indentWidth": 4,
     "objectExpression.spaceSurroundingProperties": false,
     "objectPattern.spaceSurroundingProperties": false,
-    "importDeclaration.spaceSurroundingNamedImports": false
+    "importDeclaration.spaceSurroundingNamedImports": false,
+	"nextControlFlowPosition": "nextLine"
   },
   "json": {
 	"useTabs": false,
