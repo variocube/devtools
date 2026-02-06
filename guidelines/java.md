@@ -2,40 +2,20 @@
 
 ## Lombok
 
-### Domain Objects (Immutable)
-Use `@Value`, `@Builder`, and `@AllArgsConstructor(access = AccessLevel.PRIVATE)` for immutable domain objects:
-```java
-@Value
-@Builder
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class User {
-    @NotBlank
-    String username;
-    @NotNull
-    Set<Permission> permissions;
-}
-```
+### Immutable Objects
+* Use `@Value`, `@Builder`, and `@AllArgsConstructor(access = AccessLevel.PRIVATE)`.
 
-### JPA Entities (Mutable)
-```java
-@Entity
-@Getter
-@Setter
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString(onlyExplicitlyIncluded = true)
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Builder
-public class UserEntity {
-    @Id
-    @EqualsAndHashCode.Include
-    @ToString.Include
-    private String id;
-}
-```
+### Mutable Objects
+* Use `@Getter` and `@Setter` on class or field level.
+* Use `@NoArgsConstructor` and `@AllArgsConstructor` as needed.
+* Use `@Builder` for complex construction.
 
-### Other Lombok Conventions
-* Use `@RequiredArgsConstructor` for dependency injection (see Spring Boot guidelines).
+### Equals, HashCode, and ToString
+* Prefer `@EqualsAndHashCode(onlyExplicitlyIncluded = true)` and `@ToString(onlyExplicitlyIncluded = true)`.
+* Mark relevant fields with `@EqualsAndHashCode.Include` and `@ToString.Include`.
+
+### Other Conventions
+* Use `@RequiredArgsConstructor` for constructor injection.
 * Use `@Slf4j` for logging.
 * Use `val` for local variable type inference.
 * Use `@Builder.Default` for default values in builders.
@@ -54,13 +34,7 @@ public class UserEntity {
 ## Collections
 * Use `.stream().toList()` instead of `.collect(Collectors.toList())`.
 * Use `EnumSet` for collections of enum values.
-* Use `Map.ofEntries()` with `Map.entry()` for immutable maps:
-  ```java
-  Map<String, Object> params = Map.ofEntries(
-      Map.entry("key1", value1),
-      Map.entry("key2", value2)
-  );
-  ```
+* Use `Map.ofEntries()` with `Map.entry()` for immutable maps.
 
 ## Imports
 * Never use wildcard imports.

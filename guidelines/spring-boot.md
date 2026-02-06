@@ -15,6 +15,13 @@ Each application consists of four layers/modules with clearly defined dependenci
 * Objects that contain the data required for a command (e.g. `OrderCreation` or `OrderMutation`) are also domain objects.
 * Put domain objects into the package `domain` under application's root package. Use further sub-packages to structure by domain (e.g. `order`) 
 
+### JPA Entities
+* JPA entities are mutable and use `@Entity(name = "...")`, `@Getter`, `@Setter`, `@NoArgsConstructor(access = AccessLevel.PROTECTED)`, `@AllArgsConstructor`, and `@Builder`.
+* Always specify the entity name in `@Entity(name = "...")` so it can be used in JPQL queries.
+* Use `@EqualsAndHashCode(onlyExplicitlyIncluded = true)` and `@ToString(onlyExplicitlyIncluded = true)`, marking only the ID field with `@EqualsAndHashCode.Include` and `@ToString.Include`.
+* Name entity classes with an `Entity` suffix (e.g., `OrderEntity`) to distinguish them from domain objects.
+* Put entities into the `out.store` package alongside their corresponding `Store` and `Repository`.
+
 ### Outbound adapters
 * Outbound adapters encapsulate external services and subsystems (this includes libraries).
 * Outbound adapters depend on the domain objects and can accept them as parameters and return them as return values.
