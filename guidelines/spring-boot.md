@@ -1,5 +1,9 @@
 # Spring Boot Guidelines
 
+## Build
+* Use Gradle with the Gradle Wrapper (`./gradlew`).
+* Never commit changes to the Gradle Wrapper JAR without upgrading the wrapper version.
+
 ## Architecture
 
 Each application consists of four layers/modules with clearly defined dependencies and responsibilities:

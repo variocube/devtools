@@ -1,5 +1,9 @@
 # React Guidelines
 
+## Build
+* Use Vite with `@vitejs/plugin-react`, `vite-plugin-checker`, and `@variocube/vite-plugins`.
+* Use the Vite dev server for local development.
+
 ## Components
 
 ### Functional Components Only
@@ -8,8 +12,8 @@
 
 ### Component Files
 * PascalCase for component files: `GroupList.tsx`, `EmailInput.tsx`.
-* One component per file for major components.
 * Co-locate related components in feature directories.
+* Large pages may contain multiple components in the same file; define helper components after the main export.
 
 ### Props
 * Define an interface for all props.
@@ -91,12 +95,11 @@ async function handleSave() {
 }
 ```
 
-## Styling
+## UI Components
 
-### MUI with sx Prop
+* Prefer components from `@variocube/app-ui` over plain MUI components.
 * Use the `sx` prop for component-specific styles.
 * Use the theme for consistent colors, spacing, and typography.
-* Define theme variants for different product flavors.
 
 ## Routing
 
