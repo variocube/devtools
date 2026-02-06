@@ -14,21 +14,21 @@ Each application consists of four layers/modules with clearly defined dependenci
 * Objects that contain the data required for a command (e.g. `OrderCreation` or `OrderMutation`) are also domain objects.
 * Put domain objects into the package `domain` under application's root package. Use further sub-packages to structure by domain (e.g. `order`) 
 
-### Output adapters
-* Output adapters encapsulate external services and subsystems (this includes libraries).
-* Output adapters depend on the domain objects and can accept them as parameters and return them as return values.
+### Outbound adapters
+* Outbound adapters encapsulate external services and subsystems (this includes libraries).
+* Outbound adapters depend on the domain objects and can accept them as parameters and return them as return values.
 * Their API should not leak details about the underlying service or subsystem.
-* Typical output adapters are data stores or specific-purpose libraries (e.g. PDF generation, QR-code detection).
-* Put output adapters into the package `output` under the application's root package. Use further sub-packages to structure by subsystem (e.g. `store` for data stores or `pdf` for a PDF library).
-* Use `mapstruct` to map between domain objects and output adapters specific types (e.g., between the domain object `Order` and the JPA entity `OrderEntity`).
+* Typical outbound adapters are data stores or specific-purpose libraries (e.g. PDF generation, QR-code detection).
+* Put outbound adapters into the package `out` under the application's root package. Use further sub-packages to structure by subsystem (e.g. `store` for data stores or `pdf` for a PDF library).
+* Use `mapstruct` to map between domain objects and outbound adapters specific types (e.g., between the domain object `Order` and the JPA entity `OrderEntity`).
 * Don't define an interface for an adapter unless there are multiple implementations.
 * Naming convention:
-  * The name of an output adapter typically consists of the domain and the adapter type, e.g. `OrderStore`.
+  * The name of an outbound adapter typically consists of the domain and the adapter type, e.g. `OrderStore`.
   * If there are multiple implementations of an adapter, use the generic name for the interface and a specialized name for the implementation, e.g. `Mailer` and `SmtpMailer`.  
-* Output adapters are beans annotated with `@Component` or one of its subtypes.
+* Outbound adapters are beans annotated with `@Component` or one of its subtypes.
 
 ### Application
-* Contains the application's logic (commands) and depends on the domain model and output adapters.
+* Contains the application's logic (commands) and depends on the domain model and outbound adapters.
 * Each command that the application implements goes into a separate class, e.g. `GetOrder`, `CreateOrder` or `CalculateOrderTotal`.
   * The class has a single public method to invoke the functionality, e.g. `Order createOrder(String tenantId, @Valid OrderCreation orderCreation)`.
   * There might be a number of private methods to further structure the implementation.
@@ -37,15 +37,16 @@ Each application consists of four layers/modules with clearly defined dependenci
 * A command should always validate its input data, e.g., by using `@Valid` on its parameters.
 * A command should perform authorization.
 
-### Input adapters
-* Input adapters are what actually drive the application. These can be internal triggers (events like application start-up, timers/cronjobs), or APIs that the application exposes.
-* Input adapters depend on the domain model and the application.
-* Input adapters can accept/expose domain objects as part of their external API. However, if different representations are required (e.g., in a versioned API), use `mapstruct` for the mapping.
-* Put input adapters into the package `input` under the application's root package. Use further sub-packages to structure by subsystem (e.g., `web` for Web APIs like REST controllers, or `timer` for scheduled jobs).
-* Input adapters are beans annotated with `@Component` or one of its subtypes.
+### Inbound adapters
+* Inbound adapters are what actually drive the application. These can be internal triggers (events like application start-up, timers/cronjobs), or APIs that the application exposes.
+* Inbound adapters depend on the domain model and the application.
+* Inbound adapters can accept/expose domain objects as part of their external API. However, if different representations are required (e.g., in a versioned API), use `mapstruct` for the mapping.
+* Put inbound adapters into the package `in` under the application's root package. Use further sub-packages to structure by subsystem (e.g., `web` for Web APIs like REST controllers, or `timer` for scheduled jobs).
+* Inbound adapters are beans annotated with `@Component` or one of its subtypes.
+* Use `mapstruct` to map between domain objects and inbound adapter specific types (e.g., between the domain object `Order` and a legacy DTO `OrderV1`).
 * Naming convention:
-  * The name of an input adapter typically consists of the domain and the adapter type, e.g. `OrderApi`.
-  * Optionally, an additional noun can indicate the functionality triggered by the input adapter, e.g. `OrderArchivalJob`.
+  * The name of an inbound adapter typically consists of the domain and the adapter type, e.g. `OrderApi`.
+  * Optionally, an additional noun can indicate the functionality triggered by the inbound adapter, e.g. `OrderArchivalJob`.
 
 ## Prefer Constructor Injection over Field/Setter Injection
 * Declare all the mandatory dependencies as `final` fields and inject them through the constructor.
@@ -66,12 +67,12 @@ Each application consists of four layers/modules with clearly defined dependenci
 
 ### Configuration beans
 * Place beans that configure a certain subsystem into the corresponding package, e.g.
-  * a configuration implementing `WebMvcConfigurer` should go into `input.web`
-  * a bean implementing `Filter` should go into `input.web`
-  * a `SecurityFilterChain` bean should go into `input.web`
+  * a configuration implementing `WebMvcConfigurer` should go into `in.web`
+  * a bean implementing `Filter` should go into `in.web`
+  * a `SecurityFilterChain` bean should go into `in.web`
 
 ### Secrets and sensitive configuration
-* Never put secrets or sensitive configuration into `application.yml`, the source code or any other file that is subject to version control.
+* Never put secrets or sensitive configuration into `application.yml`, the source code or any other file that is subject to version control or will be bundled in build artifacts.
 
 ## Define Clear Transaction Boundaries
 * Define each Service-layer method as a transactional unit.
@@ -101,7 +102,7 @@ Each application consists of four layers/modules with clearly defined dependenci
 
 ## Centralize Exception Handling
 * Define a global handler class annotated with `@ControllerAdvice` (or `@RestControllerAdvice` for REST APIs) using `@ExceptionHandler` methods to handle specific exceptions.
-* Put the global handler class next to the actual controllers, typically into the `input.web` package under the application's root package.
+* Put the global handler class next to the actual controllers, typically into the `in.web` package under the application's root package.
 * Return consistent error responses. Use the ProblemDetails response format ([RFC 9457](https://www.rfc-editor.org/rfc/rfc9457)).
 
 ## Actuator
@@ -113,6 +114,13 @@ Each application consists of four layers/modules with clearly defined dependenci
 ## Use Testcontainers for integration tests
 * Spin up real services (databases, message brokers, etc.) in your integration tests to mirror production environments.
 
+## Database and migrations
+* When starting the application with the default profile, the application should use a testcontainer for the database
+* By default, load demo data into the database unless the application property `<app-name>.demo` is set to `false`
+* A separate `db` (or `mariadb`) profile configures a locally running database (e.g. `mariadb://localhost:3306`). In this profile the `<app-name>.demo` property is set to `false`.
+* Use Flyway for migrations and use the baseline feature to provide an up-to-date schema for a faster startup with the testcontainer.
+* Always set `spring.jpa.hibernate.ddl-auto=validate` to ensure the schema matches the entity definition.
+
 ## Use random port for integration tests
 * When writing integration tests, start the application on a random available port to avoid port conflicts by annotating the test class with:
 
@@ -121,13 +129,13 @@ Each application consists of four layers/modules with clearly defined dependenci
     ```
 
 ## Logging
-### Use a proper logging framework.**  
+### Use a proper logging framework
 Never use `System.out.println()` for application logging. Rely on SLF4J and add Lombok's `@Slf4j` annotation to classes using a logger. 
 
-### Protect sensitive data.  
-Ensure that no credentials, personal information, or other confidential details ever appear in log output.
+### Protect sensitive data
+Ensure that no credentials, personal information, or other confidential details ever appear in log outbound.
 
-### Guard expensive log calls.  
+### Guard expensive log calls
 When building verbose messages at `DEBUG` or `TRACE` level, especially those involving method calls or complex string concatenations, wrap them in a level check or use suppliers:
 
 ```java
