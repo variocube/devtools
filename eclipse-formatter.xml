@@ -39,31 +39,35 @@
 		<setting id="org.eclipse.jdt.core.formatter.keep_simple_while_body_on_same_line" value="false"/>
 		<setting id="org.eclipse.jdt.core.formatter.keep_simple_do_while_body_on_same_line" value="false"/>
 
-		<!-- Wrapping: wrap all elements one per line when exceeds limit -->
-		<!-- Value 5 = wrap all, one per line; +16 = force when wrapping; +32 = indent on column -->
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_parameters_in_method_declaration" value="5"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_arguments_in_method_invocation" value="5"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_arguments_in_explicit_constructor_call" value="5"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_arguments_in_allocation_expression" value="5"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_arguments_in_qualified_allocation_expression" value="5"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_arguments_in_annotation" value="5"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_throws_clause_in_method_declaration" value="5"/>
+		<!-- Wrapping: chop down if long (one line if fits, else each element on own line) -->
+		<!-- Value 80 = M_NEXT_PER_LINE_SPLIT (chop down if long) -->
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_parameters_in_method_declaration" value="80"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_arguments_in_method_invocation" value="80"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_arguments_in_explicit_constructor_call" value="80"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_arguments_in_allocation_expression" value="80"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_arguments_in_qualified_allocation_expression" value="80"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_arguments_in_annotation" value="80"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_throws_clause_in_method_declaration" value="80"/>
 		<setting id="org.eclipse.jdt.core.formatter.alignment_for_superclass_in_type_declaration" value="16"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_superinterfaces_in_type_declaration" value="5"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_superinterfaces_in_enum_declaration" value="5"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_superinterfaces_in_record_declaration" value="5"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_resources_in_try" value="5"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_union_type_in_multicatch" value="5"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_expressions_in_array_initializer" value="5"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_conditional_expression" value="16"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_superinterfaces_in_type_declaration" value="80"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_superinterfaces_in_enum_declaration" value="80"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_superinterfaces_in_record_declaration" value="80"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_resources_in_try" value="80"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_union_type_in_multicatch" value="80"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_expressions_in_array_initializer" value="80"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_conditional_expression" value="80"/>
 		<setting id="org.eclipse.jdt.core.formatter.alignment_for_binary_expression" value="16"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_record_components" value="5"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_record_components" value="80"/>
 		<setting id="org.eclipse.jdt.core.formatter.alignment_for_expressions_in_switch_case_with_arrow" value="16"/>
 		<setting id="org.eclipse.jdt.core.formatter.alignment_for_expressions_in_switch_case_with_colon" value="16"/>
 		<setting id="org.eclipse.jdt.core.formatter.alignment_for_switch_case_with_arrow_expression" value="16"/>
 		<setting id="org.eclipse.jdt.core.formatter.alignment_for_method_declaration" value="0"/>
 		<setting id="org.eclipse.jdt.core.formatter.alignment_for_assignment" value="16"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_selector_in_method_invocation" value="16"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_selector_in_method_invocation" value="80"/>
+
+		<!-- Method chaining: wrap before dot -->
+		<setting id="org.eclipse.jdt.core.formatter.wrap_before_or_operator_multicatch" value="true"/>
+		<setting id="org.eclipse.jdt.core.formatter.wrap_outer_expressions_when_nested" value="true"/>
 
 		<!-- Parentheses positions when wrapping -->
 		<setting id="org.eclipse.jdt.core.formatter.parentheses_positions_in_method_invocation" value="separate_lines_if_wrapped"/>
@@ -78,10 +82,11 @@
 		<setting id="org.eclipse.jdt.core.formatter.parentheses_positions_in_try_clause" value="common_lines"/>
 		<setting id="org.eclipse.jdt.core.formatter.parentheses_positions_in_catch_clause" value="common_lines"/>
 
-		<!-- Operators at start of line when wrapped -->
+		<!-- Operators and dots at start of line when wrapped -->
 		<setting id="org.eclipse.jdt.core.formatter.wrap_before_binary_operator" value="true"/>
 		<setting id="org.eclipse.jdt.core.formatter.wrap_before_conditional_operator" value="true"/>
 		<setting id="org.eclipse.jdt.core.formatter.wrap_before_assignment_operator" value="false"/>
+		<setting id="org.eclipse.jdt.core.formatter.wrap_before_dot" value="true"/>
 
 		<!-- Blank lines -->
 		<setting id="org.eclipse.jdt.core.formatter.blank_lines_before_package" value="0"/>
