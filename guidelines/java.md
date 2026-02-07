@@ -41,11 +41,11 @@ Run with: `mvn spotless:apply`
 
 ### IntelliJ IDEA
 
-Import the Eclipse formatter profile:
+Install the **Eclipse Code Formatter** plugin (by Krasa):
 
-**Settings → Editor → Code Style → Java → ⚙️ → Import Scheme → Eclipse XML Profile**
+**Settings → Plugins → Marketplace → search "Eclipse Code Formatter" → Install**
 
-Select `.devtools/eclipse-formatter.xml`.
+The plugin is pre-configured by devtools to use `.devtools/eclipse-formatter.xml`.
 
 ## Lombok
 
