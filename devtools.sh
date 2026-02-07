@@ -264,10 +264,9 @@ install_devtools() {
 	ln -srf ".devtools/.editorconfig" ".editorconfig"
 	ln -srf ".devtools/dprint.json" "dprint.json"
 
-	# IDEA settings
+	# IDEA settings (Project.xml not linked - import eclipse-formatter.xml instead)
 	mkdir -p ".idea/codeStyles"
 	ln -srf ".devtools/idea/codeStyles/codeStyleConfig.xml" ".idea/codeStyles/codeStyleConfig.xml"
-	ln -srf ".devtools/idea/codeStyles/Project.xml" ".idea/codeStyles/Project.xml"
 	ln -srf ".devtools/idea/dprintProjectConfig.xml" ".idea/dprintProjectConfig.xml"
 	ln -srf ".devtools/idea/dprintUserConfig.xml" ".idea/dprintUserConfig.xml"
 

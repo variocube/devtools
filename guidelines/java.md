@@ -1,5 +1,52 @@
 # Java Guidelines
 
+## Formatting
+
+Use **Spotless** with the Eclipse formatter for consistent code style. Configuration is provided by devtools (`eclipse-formatter.xml`).
+
+### Gradle
+
+```kotlin
+plugins {
+    id("com.diffplug.spotless") version "7.0.2"
+}
+
+spotless {
+    java {
+        eclipse().configFile(".devtools/eclipse-formatter.xml")
+    }
+}
+```
+
+Run with: `./gradlew spotlessApply`
+
+### Maven
+
+```xml
+<plugin>
+    <groupId>com.diffplug.spotless</groupId>
+    <artifactId>spotless-maven-plugin</artifactId>
+    <version>2.44.3</version>
+    <configuration>
+        <java>
+            <eclipse>
+                <file>.devtools/eclipse-formatter.xml</file>
+            </eclipse>
+        </java>
+    </configuration>
+</plugin>
+```
+
+Run with: `mvn spotless:apply`
+
+### IntelliJ IDEA
+
+Import the Eclipse formatter profile:
+
+**Settings → Editor → Code Style → Java → ⚙️ → Import Scheme → Eclipse XML Profile**
+
+Select `.devtools/eclipse-formatter.xml`.
+
 ## Lombok
 
 ### Immutable Objects
