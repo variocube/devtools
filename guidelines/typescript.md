@@ -1,5 +1,11 @@
 # TypeScript Guidelines
 
+## Formatting
+
+* Use **dprint** for formatting TypeScript, JavaScript, JSON, and Markdown.
+* Configuration is provided by devtools (`dprint.json`).
+* Install dprint if needed: `npm install --save-dev dprint`
+
 ## Strict Mode
 * Enable strict mode in `tsconfig.json`.
 * Never use `any` unless absolutely necessary; prefer `unknown` for truly unknown types.
