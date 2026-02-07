@@ -263,6 +263,7 @@ install_devtools() {
 	ln -srf ".devtools/devtools.sh" "devtools.sh"
 	ln -srf ".devtools/.editorconfig" ".editorconfig"
 	ln -srf ".devtools/dprint.json" "dprint.json"
+	ln -srf ".devtools/PROJECT_CLAUDE.md" "CLAUDE.md"
 
 	# IDEA settings
 	mkdir -p ".idea"
