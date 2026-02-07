@@ -252,6 +252,7 @@ install_devtools() {
 
 	# Remove unnecessary files
 	rm -rf "${target_dir}/.devtools/.idea"
+	rm -f "${target_dir}/.devtools/CLAUDE.md"
 
 	info "Creating symlinks..."
 
