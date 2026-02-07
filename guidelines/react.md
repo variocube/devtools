@@ -12,8 +12,8 @@
 
 ### Component Files
 * PascalCase for component files: `GroupList.tsx`, `EmailInput.tsx`.
-* Co-locate related components in feature directories.
-* Large pages may contain multiple components in the same file; define helper components after the main export.
+* Co-locate related components in feature directories or below the main export.
+* If JSX nesting hits a depth of 5, extract nested components.
 
 ### Props
 * Define an interface for all props.
@@ -100,6 +100,8 @@ async function handleSave() {
 * Prefer components from `@variocube/app-ui` over plain MUI components.
 * Use the `sx` prop for component-specific styles.
 * Use the theme for consistent colors, spacing, and typography.
+* Prefer <Stack> over <Grid> for simple layouts.
+* Spacing: Use 2 for normal spacing, 1 for tight spacing, and 4 for wide spacing.
 
 ## Routing
 
