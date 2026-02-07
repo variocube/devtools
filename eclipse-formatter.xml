@@ -40,26 +40,26 @@
 		<setting id="org.eclipse.jdt.core.formatter.keep_simple_do_while_body_on_same_line" value="false"/>
 
 		<!-- Wrapping: wrap if long -->
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_parameters_in_method_declaration" value="21"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_arguments_in_method_invocation" value="21"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_arguments_in_explicit_constructor_call" value="21"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_arguments_in_allocation_expression" value="21"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_arguments_in_qualified_allocation_expression" value="21"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_arguments_in_annotation" value="21"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_throws_clause_in_method_declaration" value="21"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_superclass_in_type_declaration" value="21"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_superinterfaces_in_type_declaration" value="21"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_superinterfaces_in_enum_declaration" value="21"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_superinterfaces_in_record_declaration" value="21"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_resources_in_try" value="21"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_union_type_in_multicatch" value="21"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_expressions_in_array_initializer" value="21"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_conditional_expression" value="21"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_binary_expression" value="21"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_record_components" value="21"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_expressions_in_switch_case_with_arrow" value="21"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_expressions_in_switch_case_with_colon" value="21"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_switch_case_with_arrow_expression" value="21"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_parameters_in_method_declaration" value="16"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_arguments_in_method_invocation" value="16"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_arguments_in_explicit_constructor_call" value="16"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_arguments_in_allocation_expression" value="16"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_arguments_in_qualified_allocation_expression" value="16"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_arguments_in_annotation" value="16"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_throws_clause_in_method_declaration" value="16"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_superclass_in_type_declaration" value="16"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_superinterfaces_in_type_declaration" value="16"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_superinterfaces_in_enum_declaration" value="16"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_superinterfaces_in_record_declaration" value="16"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_resources_in_try" value="16"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_union_type_in_multicatch" value="16"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_expressions_in_array_initializer" value="16"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_conditional_expression" value="16"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_binary_expression" value="16"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_record_components" value="16"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_expressions_in_switch_case_with_arrow" value="16"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_expressions_in_switch_case_with_colon" value="16"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_switch_case_with_arrow_expression" value="16"/>
 		<setting id="org.eclipse.jdt.core.formatter.alignment_for_method_declaration" value="0"/>
 		<setting id="org.eclipse.jdt.core.formatter.alignment_for_assignment" value="16"/>
 		<setting id="org.eclipse.jdt.core.formatter.alignment_for_selector_in_method_invocation" value="16"/>
