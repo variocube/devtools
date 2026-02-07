@@ -4,17 +4,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Purpose
 
-This is the Variocube developer tools repository. It provides shared configurations (EditorConfig, dprint) and coding guidelines that are installed into Variocube projects via `devtools.sh init`. The `.devtools` directory and symlinks are checked into target projects.
+This is the Variocube developer tools repository. It provides shared configurations (EditorConfig, dprint) and coding guidelines that are installed into Variocube projects. The `.devtools` directory and symlinks are checked into target projects.
 
 ## Key Commands
 
-- `./devtools.sh init` - Initialize devtools in a project (creates `.devtools`, `.vc` config, and symlinks)
-- `./devtools.sh update` - Update devtools to latest version from repository
-- `./devtools.sh setup` - Run initial build (npm install, gradlew build)
-- `./devtools.sh assertSetup` - Verify prerequisites (Java, Node, npm, AWS CLI)
-- `./devtools.sh databaseCreate` - Create local MySQL database from `.vc` config
-- `./devtools.sh databaseImport [-d dump.sql]` - Import database dump (downloads from S3 if no file specified)
-- `./devtools.sh tailLogs [-s stage]` - Tail CloudWatch logs (default stage: app)
+- `./devtools.sh` - Install or update devtools (default action)
+- `./devtools.sh update` - Alias for install/update
+- `./devtools.sh db:create` - Create local MySQL database (prompts for name if not configured)
+- `./devtools.sh db:drop` - Drop local MySQL database
+- `./devtools.sh db:import` - Import database from S3 backup
+- `./devtools.sh db:import -d dump.sql` - Import specific dump file (no AWS needed)
+- `./devtools.sh db:clean` - Delete downloaded database dumps
+- `./devtools.sh logs [-s stage]` - Tail CloudWatch logs (default stage: app)
+- `./devtools.sh help` - Show help message
 
 ## Repository Structure
 
@@ -60,8 +62,8 @@ src/main/typescript/
 
 ## Configuration File
 
-Projects using devtools have a `.vc` file with environment-specific settings:
-- `JAVA_VERSION`, `NODE_VERSION`, `NPM_VERSION`
-- `VC_AWS_REGION`, `VC_AWS_PROFILE`
+Projects using devtools may have an optional `.vc` file with environment-specific settings. This file is created interactively when commands require configuration:
+
 - `DATABASE_NAME` (for local MySQL operations)
+- `VC_AWS_REGION`, `VC_AWS_PROFILE` (for AWS operations)
 - `CLOUD_WATCH_LOG_GROUP_<stage>` (for log tailing)
