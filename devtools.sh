@@ -234,13 +234,15 @@ install_devtools() {
 
 	local temp_zip
 	temp_zip=$(mktemp)
-	trap 'rm -f "$temp_zip"' EXIT
 
 	info "Downloading devtools..."
-	wget -q "$GITHUB_ZIP_URL" -O "$temp_zip" || die "Failed to download devtools"
+	wget -q "$GITHUB_ZIP_URL" -O "$temp_zip" || { rm -f "$temp_zip"; die "Failed to download devtools"; }
 
 	info "Extracting..."
-	unzip -q "$temp_zip" -d "$target_dir" || die "Failed to extract devtools"
+	unzip -q "$temp_zip" -d "$target_dir" || { rm -f "$temp_zip"; die "Failed to extract devtools"; }
+
+	# Clean up temp file
+	rm -f "$temp_zip"
 
 	# Remove old devtools directory if it exists
 	rm -rf "${target_dir}/.devtools"
