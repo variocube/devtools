@@ -41,7 +41,7 @@ Run with: `mvn spotless:apply`
 
 ### IntelliJ IDEA
 
-Install the **Eclipse Code Formatter** plugin (by Krasa):
+Install the **Adapter for Eclipse Code Formatter** plugin:
 
 **Settings → Plugins → Marketplace → search "Eclipse Code Formatter" → Install**
 
