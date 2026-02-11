@@ -21,7 +21,10 @@ public class FormatterTest implements Comparable<FormatterTest>, Cloneable {
 
 	public void methodChainingWithAssignment() {
 		// Method chain should wrap at dots, not after =
-		String result = repository.findById(id).map(Entity::getName).filter(name -> !name.isEmpty()).orElse("default");
+		String result = repository.findById(id)
+				.map(Entity::getName)
+				.filter(name -> !name.isEmpty())
+				.orElse("default");
 
 		// Optional chain
 		Optional<String> optional = service.getData()
@@ -66,7 +69,8 @@ public class FormatterTest implements Comparable<FormatterTest>, Cloneable {
 	// Method declarations with many parameters
 	// ===========================================
 
-	public void methodWithManyParameters(String firstName,
+	public void methodWithManyParameters(
+			String firstName,
 			String lastName,
 			int age,
 			String email,
@@ -77,7 +81,8 @@ public class FormatterTest implements Comparable<FormatterTest>, Cloneable {
 		// Body
 	}
 
-	public <T extends Comparable<T>, R> R genericMethodWithManyParams(List<T> items,
+	public <T extends Comparable<T>, R> R genericMethodWithManyParams(
+			List<T> items,
 			Function<T, R> mapper,
 			R defaultValue,
 			boolean sorted) {
@@ -135,14 +140,14 @@ public class FormatterTest implements Comparable<FormatterTest>, Cloneable {
 	public String switchStatements(int value) {
 		// Classic switch
 		switch (value) {
-			case 1 :
+			case 1:
 				return "one";
-			case 2 :
+			case 2:
 				return "two";
-			case 3 :
-			case 4 :
+			case 3:
+			case 4:
 				return "three or four";
-			default :
+			default:
 				return "other";
 		}
 	}
@@ -340,7 +345,10 @@ public class FormatterTest implements Comparable<FormatterTest>, Cloneable {
 		process(transform(validate(parse(input))));
 
 		// Mixed chains and arguments
-		result = service.getData(param1, param2).transform(arg1, arg2, arg3).filter(x -> x.isValid()).collect();
+		result = service.getData(param1, param2)
+				.transform(arg1, arg2, arg3)
+				.filter(x -> x.isValid())
+				.collect();
 	}
 
 	// ===========================================
@@ -432,7 +440,10 @@ public class FormatterTest implements Comparable<FormatterTest>, Cloneable {
 	// ===========================================
 
 	public enum Status {
-		PENDING, ACTIVE, COMPLETED, CANCELLED;
+		PENDING,
+		ACTIVE,
+		COMPLETED,
+		CANCELLED;
 
 		public boolean isTerminal() {
 			return this == COMPLETED || this == CANCELLED;
