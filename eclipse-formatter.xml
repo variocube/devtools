@@ -62,7 +62,7 @@
 		<setting id="org.eclipse.jdt.core.formatter.alignment_for_expressions_in_switch_case_with_colon" value="16"/>
 		<setting id="org.eclipse.jdt.core.formatter.alignment_for_switch_case_with_arrow_expression" value="16"/>
 		<setting id="org.eclipse.jdt.core.formatter.alignment_for_method_declaration" value="0"/>
-		<setting id="org.eclipse.jdt.core.formatter.alignment_for_assignment" value="16"/>
+		<setting id="org.eclipse.jdt.core.formatter.alignment_for_assignment" value="0"/>
 		<setting id="org.eclipse.jdt.core.formatter.alignment_for_selector_in_method_invocation" value="80"/>
 
 		<!-- Method chaining: wrap before dot -->
