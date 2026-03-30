@@ -88,10 +88,14 @@ Each application consists of four layers/modules with clearly defined dependenci
 * Never put secrets or sensitive configuration into `application.yml`, the source code or any other file that is subject to version control or will be bundled in build artifacts.
 
 ## Define Clear Transaction Boundaries
-* Annotate service classes with `@Transactional(readOnly = true)` by default.
-* Override with `@Transactional` on individual data-modifying methods.
-* Limit the code inside each transaction to the smallest necessary scope.
-* Only call network services other than the database in a transaction when a short (less than one second) time-out is guaranteed.
+* Open-session-in-view (OSIV) should be disabled.
+* In stores:
+  * Annotate store methods with `@Transactional(readOnly = true)` by default.
+  * Use `@Transactional` on individual data-modifying store methods.
+* In commands: 
+  * Annotate the single public command method with `@Transactional` when needed (usually when data is modified)
+  * Limit the code inside each transaction to the smallest necessary scope. Use `TransactionTemplate` when needed.
+  * Only call network services (like `AppClient`) other than the database in a transaction when a short (less than one second) time-out is guaranteed.
 
 ## Use generic exceptions where possible and avoid checked exceptions
 * Use generic exceptions instead of creating custom exceptions, e.g., use `EntityNotFoundException` instead of creating an `OrderNotFoundException`.
@@ -105,6 +109,10 @@ Each application consists of four layers/modules with clearly defined dependenci
 * **Consistent patterns for collections and sub-resources:** Keep URL conventions uniform (for example, `/posts` for posts collection and `/posts/{slug}/comments` for comments of a specific post).
 * Use SpringDoc to generate OpenAPI schemas and Swagger documentation. Prefer SpringDoc's Javadoc extension instead of using annotations where possible.
 * Use Spring Data's `Pageable` and `Page` for collection resources that may contain an unbounded number of items.
+
+## SpringDoc / OpenAPI
+* Use SpringDoc to generate an OpenAPI spec for REST APIs
+* Use `@NotNull` on primitives for correct spec/client generation
 
 ## Centralize Exception Handling
 * Define a global handler class annotated with `@ControllerAdvice` (or `@RestControllerAdvice` for REST APIs) using `@ExceptionHandler` methods to handle specific exceptions.
