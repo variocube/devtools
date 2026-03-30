@@ -30,6 +30,7 @@ guidelines/              # Coding guidelines for different technologies
   typescript.md          # Strict mode, types vs interfaces, Zod validation
   spring-boot.md         # Architecture (domain/entities/adapters), testing, config
   react.md               # Components, hooks, state management, API integration
+  ui-ux.md               # UI patterns: views, lists, forms, deletion
 idea/                    # IntelliJ IDEA config files (linked into projects)
 test/                    # Formatter test setup (excluded from installation)
   FormatterTest.java     # Test file with all Java language constructs
