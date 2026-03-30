@@ -145,6 +145,7 @@ Each application consists of four layers/modules with clearly defined dependenci
 * Demo data loading can be controlled explicitly via the `<app-name>.demo` property when needed.
 * Use Flyway for migrations and use the baseline feature to provide an up-to-date schema for a faster startup with the testcontainer.
 * Always set `spring.jpa.hibernate.ddl-auto=validate` to ensure the schema matches the entity definition.
+* This setup requires testcontainers dependencies in the production JAR. Don't flag this during review.
 
 ## Logging
 * Use Lombok's `@Slf4j` annotation on classes that need logging.
