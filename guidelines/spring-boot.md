@@ -100,6 +100,27 @@ Each application consists of four layers/modules with clearly defined dependenci
 ## Disable Open Session in View Pattern
 * While using Spring Data JPA, disable the Open Session in View filter by setting ` spring.jpa.open-in-view=false` in `application.properties/yml.`
 
+## Paginated Queries with Collection Fetches
+
+When a paginated query (`Pageable`) uses `JOIN FETCH` on a collection (one-to-many or many-to-many), Hibernate cannot apply `LIMIT/OFFSET` at the database level because the join multiplies rows. Instead, it loads the entire result set into memory and paginates in Java (warning `HHH90003004`). This is a performance and memory risk.
+
+Use `FetchPagination` from `com.variocube:spring-tools` to split the query into two:
+1. **ID query:** Paginates entity IDs with filters only (no collection fetches), so `LIMIT/OFFSET` works at the DB level.
+2. **Fetch query:** Loads full entities by those IDs with all `JOIN FETCH` directives applied.
+
+```java
+return FetchPagination.of(orderRepository, OrderEntity::getId)
+    .where(hasTenant(tenantId))
+    .where(hasStatus(ACTIVE))
+    .fetch(joinFetchLineItems())   // OneToMany — causes HHH90003004 without FetchPagination
+    .fetch(joinFetchCustomer())    // ManyToOne — safe on its own, but included for eager loading
+    .findAll(pageable)
+    .map(this::mapOrder);
+```
+
+* **When to use:** Any paginated query that fetches a collection association (`@OneToMany`, `@ManyToMany`).
+* **When NOT needed:** Non-paginated queries (no `Pageable`), or paginated queries that only fetch single-valued associations (`@ManyToOne`, `@OneToOne`) — these don't multiply rows.
+
 ## Follow REST API Design Principles
 * **Versioned, resource-oriented URLs:** Structure your endpoints as `/api/v{version}/resources` (e.g. `/api/v1/orders`).
 * **Consistent patterns for collections and sub-resources:** Keep URL conventions uniform (for example, `/posts` for posts collection and `/posts/{slug}/comments` for comments of a specific post).
