@@ -167,6 +167,10 @@ return FetchPagination.of(orderRepository, OrderEntity::getId)
 * Use Flyway for migrations and use the baseline feature to provide an up-to-date schema for a faster startup with the testcontainer.
 * Always set `spring.jpa.hibernate.ddl-auto=validate` to ensure the schema matches the entity definition.
 * This setup requires testcontainers dependencies in the production JAR. Don't flag this during review.
+* For schema changes on large tables (e.g. `DROP COLUMN`, `ADD COLUMN`, `MODIFY COLUMN`), avoid long table-rewriting locks that cause deployment downtime:
+  * On MariaDB 10.3+ and MySQL 8.0+, prefer instant/online DDL by appending `ALGORITHM=INSTANT` (fallback `ALGORITHM=INPLACE, LOCK=NONE`) to the `ALTER TABLE` statement in the Flyway migration. If the engine cannot perform the change instantly, the statement fails fast instead of silently falling back to a blocking copy.
+  * If the change is not supported as instant/inplace, use an external online schema change tool (`pt-online-schema-change` or `gh-ost`) outside of Flyway and land a no-op repeatable migration to keep checksums aligned.
+  * Follow the expand/contract pattern: ship code that stops using the column in one release, then drop it in a later release.
 
 ## Logging
 * Use Lombok's `@Slf4j` annotation on classes that need logging.
