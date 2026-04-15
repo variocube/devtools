@@ -323,6 +323,7 @@ install_devtools() {
 	rm -rf "${target_dir}/.devtools/.idea"
 	rm -rf "${target_dir}/.devtools/test"
 	rm -f "${target_dir}/.devtools/CLAUDE.md"
+	rm -f "${target_dir}/.devtools/.devtools"
 
 	info "Creating symlinks..."
 
