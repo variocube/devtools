@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Purpose
 
-This is the Variocube developer tools repository. It provides shared configurations (EditorConfig, dprint) and coding guidelines that are installed into Variocube projects. The `.devtools` directory and symlinks are checked into target projects.
+This is the Variocube developer tools repository. It provides shared **formatter/editor configuration** (EditorConfig, dprint, Eclipse formatter) and the management script (`devtools.sh`) that are installed into Variocube projects. The `.devtools` directory and symlinks are checked into target projects.
+
+**Coding guidelines and Claude context have moved** to the workspace repo (`variocube/.claude/`, auto-loaded for every repo). devtools no longer ships `guidelines/` or `PROJECT_CLAUDE.md`. devtools now owns only the things that must be physical files in each repo: formatter configs + this script.
 
 ## Key Commands
 
@@ -25,12 +27,6 @@ devtools.sh              # Main installation/management script
 eclipse-formatter.xml    # Java formatter config (Eclipse JDT format)
 dprint.json              # Code formatter config (TypeScript, JSON, Markdown)
 .editorconfig            # Basic editor settings (tabs, line endings)
-guidelines/              # Coding guidelines for different technologies
-  java.md                # Lombok conventions, null handling, collections
-  typescript.md          # Strict mode, types vs interfaces, Zod validation
-  spring-boot.md         # Architecture (domain/entities/adapters), testing, config
-  react.md               # Components, hooks, state management, API integration
-  ui-ux.md               # UI patterns: views, lists, forms, deletion
 idea/                    # IntelliJ IDEA config files (linked into projects)
 test/                    # Formatter test setup (excluded from installation)
   FormatterTest.java     # Test file with all Java language constructs
@@ -38,26 +34,11 @@ test/                    # Formatter test setup (excluded from installation)
   gradlew                # Gradle wrapper
 ```
 
-## Guidelines Summary
+## Coding Guidelines
 
-The `guidelines/` directory contains detailed coding standards. Key architectural concepts:
-
-**Spring Boot Architecture** (4 layers):
-1. **Domain Objects** - Immutable POJOs with Lombok `@Value`, `@Builder`, in `domain` package
-2. **JPA Entities** - Mutable, named with `Entity` suffix, in `out.store` package
-3. **Outbound Adapters** - External services/libraries, in `out` package (e.g., `out.store`, `out.pdf`)
-4. **Application** - Commands in separate classes, in root package
-5. **Inbound Adapters** - REST controllers, scheduled jobs, in `in` package (e.g., `in.web`, `in.timer`)
-
-**React Structure**:
-```
-src/main/typescript/
-├── api/       # API client and hooks
-├── controls/  # Reusable UI components
-├── hooks/     # Custom hooks
-├── tenant/    # Feature modules (users/, groups/, bookings/)
-└── utils/     # Utility functions
-```
+Coding guidelines now live in the **workspace** repo at `variocube/.claude/guidelines/`
+(`general`, `java`, `typescript`, `spring-boot`, `react`, `ui-ux`) and are referenced from the
+workspace `CLAUDE.md`, which auto-loads for every repo. Edit them there — not here.
 
 ## Code Formatting
 
@@ -99,10 +80,14 @@ cd test
 
 The `test/` directory is excluded from installation in consuming projects.
 
-## Configuration File
+## Configuration: registry first, `.vc` fallback
 
-Projects using devtools may have an optional `.vc` file with environment-specific settings. This file is created interactively when commands require configuration:
+AWS profile/region and CloudWatch log groups are resolved from the **workspace registry**
+`projects.json` (found by walking up the directory tree), keyed by the repo directory name:
 
-- `DATABASE_NAME` (for local MySQL operations)
-- `VC_AWS_REGION`, `VC_AWS_PROFILE` (for AWS operations)
-- `CLOUD_WATCH_LOG_GROUP_<stage>` (for log tailing)
+- profile/region ← `(.projects[$repo].aws // .defaults.aws)`
+- log group ← `.projects[$repo].stages[<stage>].logGroup`
+
+If the registry, `jq`, or a specific key is unavailable, devtools falls back to the per-repo `.vc`
+file (and finally an interactive prompt). The `.vc` file is being phased out in favor of the
+registry; `DATABASE_NAME` for local MySQL still lives in `.vc` for now.
