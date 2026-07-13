@@ -99,6 +99,32 @@ Install the `dprint` plugin for IntelliJ and enable it in settings.
 
 The devtools installation automatically links the necessary IDEA configuration files.
 
+### Spotless Eclipse formatter (Java)
+
+Java formatting is enforced by Spotless using the shared `.devtools/eclipse-formatter.xml`
+config (`eclipse().configFile('.devtools/eclipse-formatter.xml')` in `build.gradle`). Spotless
+resolves the Eclipse JDT formatter via Equo/P2, **downloading from `eclipse.org` at build time**.
+
+Local builds cache the artifacts after the first run, but cold CI runners re-download on every
+run — so an `eclipse.org` outage takes down every CI build (see variocube/safecube#1182).
+
+To make CI resilient, devtools ships a composite action that caches the resolved P2 artifacts.
+Add one step to your `build.yml`, right after `setup-java`:
+
+```yaml
+- uses: actions/setup-java@v4
+  with:
+    distribution: temurin
+    java-version: 21
+    cache: gradle
+- uses: ./.devtools/actions/cache-spotless-eclipse
+```
+
+The cache lives at `~/.m2/repository/dev/equo/p2-data` (where Spotless stores the Equo bundle-pool
+— not under `~/.gradle`, so `cache: gradle` does not cover it) and is keyed on the Spotless setup
+(`build.gradle`) plus `.devtools/eclipse-formatter.xml`. A cold `eclipse.org` then only affects the
+first run after a version or config bump, not every build.
+
 ## Notes
 
 **Linux users:** Leave the MySQL password empty when prompted to use sudo for root access.
