@@ -484,7 +484,7 @@ cmd_db_import() {
 		info "Downloading backup '${backup_name}' from S3..."
 		aws s3 cp "s3://vc-aws-infrastructure/rds-backups/${backup_name}" "$local_path" \
 			--region "${AWS_REGION}" --profile "${AWS_PROFILE}" \
-			|| die "Failed to download backup"
+			|| die "Failed to download backup (profile=${AWS_PROFILE}). Read-only claude-* users cannot download raw backups: run with AWS_PROFILE=<admin-profile>, or download the dump with admin credentials and pass it with -d <file>."
 
 		if [[ "$uncompress" == "1" ]]; then
 			info "Uncompressing..."
