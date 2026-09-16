@@ -56,6 +56,25 @@ per-repo setup needed.
 If the registry is unavailable, devtools falls back to a local `.vc` file (created interactively),
 then to a prompt. `.vc` is being phased out in favor of the registry.
 
+### `db:import` needs an admin profile for the S3 download
+
+Without `-d`, `db:import` downloads yesterday's dump from
+`s3://vc-aws-infrastructure/rds-backups/`. The read-only `claude-*` IAM users (the managed
+`claude` group, see `variocube/infrastructure` `platform/account/iam-claude.tf`) can list that
+bucket but are **denied object downloads** outside Terraform state and pseudonymized exports, so
+with such a profile the download fails with `AccessDenied` ("Failed to download backup") even
+though `aws s3 ls` works. The registry's `variocube` profile is that read-only user on Claude
+machines.
+
+An explicit `AWS_PROFILE` in the environment takes precedence over the registry, so either:
+
+```bash
+AWS_PROFILE=<your-admin-profile> ./devtools.sh db:import
+# or download with admin credentials and import the file (no AWS access needed):
+aws s3 cp s3://vc-aws-infrastructure/rds-backups/<date>-<db>.sql.gz . --profile <your-admin-profile>
+./devtools.sh db:import -d <date>-<db>.sql.gz
+```
+
 Settings still read from `.vc` when present:
 - `DATABASE_NAME` - Database name for local MySQL operations (not managed by the registry yet)
 - `VC_AWS_PROFILE` / `VC_AWS_REGION` - fallback AWS profile/region

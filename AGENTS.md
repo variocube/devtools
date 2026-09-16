@@ -14,7 +14,9 @@ This is the Variocube developer tools repository. It provides shared **formatter
 - `./devtools.sh update` - Alias for install/update
 - `./devtools.sh db:create` - Create local MySQL database (prompts for name if not configured)
 - `./devtools.sh db:drop` - Drop local MySQL database
-- `./devtools.sh db:import` - Import database from S3 backup
+- `./devtools.sh db:import` - Import database from S3 backup (the S3 download needs an **admin**
+  profile: `AWS_PROFILE=<admin> ./devtools.sh db:import`; the read-only `claude-*` users are denied
+  raw-backup downloads, see README § Configuration)
 - `./devtools.sh db:import -d dump.sql` - Import specific dump file (no AWS needed)
 - `./devtools.sh db:clean` - Delete downloaded database dumps
 - `./devtools.sh logs [-s stage]` - Tail CloudWatch logs (default stage: app)
